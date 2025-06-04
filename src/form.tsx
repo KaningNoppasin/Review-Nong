@@ -67,10 +67,32 @@ const formSchema = z.object({
 });
 
 export default function MyForm() {
-    const [classNameValue, setClassNameValue] = useState<string>("state");
+    const [classNameValue, setClassNameValue] = useState<string>("");
+
+    const getValuesFromLocal = () : z.infer<typeof formSchema>[] | [] => {
+        const valuesLocal = localStorage.getItem("values");
+        return valuesLocal ? JSON.parse(valuesLocal) : []
+    }
+
+    const addValuesFromLocal = (values : z.infer<typeof formSchema>) => {
+        const valuesLocal = localStorage.getItem("values");
+        let parsed: z.infer<typeof formSchema>[] = []
+
+        if (valuesLocal) {
+            parsed = JSON.parse(valuesLocal);
+        }
+        const updated = [...parsed, values];
+
+        // Save back to localStorage
+        localStorage.setItem("values", JSON.stringify(updated));
+    }
+
+    const resetValuesFromLocal = () => {
+        localStorage.setItem("values", JSON.stringify([]));
+    }
 
     useEffect(() => {
-        const classNameData = "python"
+        const classNameData = sessionStorage.getItem("className") ?? ""
 
         setClassNameValue(classNameData)
         const prevForm = form.getValues();
@@ -78,6 +100,9 @@ export default function MyForm() {
             ...prevForm,
             className: classNameData,
         });
+
+        const parsed = getValuesFromLocal()
+        console.log(parsed);
     }, [])
 
     // const [files, setFiles] = useState<File[] | null>(null);
@@ -98,6 +123,8 @@ export default function MyForm() {
     function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             console.log(values);
+            sessionStorage.setItem("className", values.className);
+            addValuesFromLocal(values)
             toast(
                 <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
                     <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -278,6 +305,7 @@ export default function MyForm() {
                         )}
                     /> */}
                     <Button type="submit">Submit</Button>
+                    <Button onClick={resetValuesFromLocal}>Clear local storage</Button>
                 </form>
             </Form>
         </div>
