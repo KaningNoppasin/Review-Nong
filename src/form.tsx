@@ -91,7 +91,7 @@ export default function MyForm() {
         localStorage.setItem("values", JSON.stringify([]));
     }
 
-    useEffect(() => {
+    const clearFormWithOutClassName = () => {
         const classNameData = sessionStorage.getItem("className") ?? ""
 
         setClassNameValue(classNameData)
@@ -100,6 +100,15 @@ export default function MyForm() {
             ...prevForm,
             className: classNameData,
         });
+    }
+
+    const clearForm = () => {
+        form.reset();
+    }
+
+
+    useEffect(() => {
+        clearFormWithOutClassName()
 
         const parsed = getValuesFromLocal()
         console.log(parsed);
@@ -304,8 +313,10 @@ export default function MyForm() {
                             </FormItem>
                         )}
                     /> */}
-                    <Button type="submit">Submit</Button>
-                    <Button onClick={resetValuesFromLocal}>Clear local storage</Button>
+                    <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
+                        <Button type="submit" className="col-span-4">Submit</Button>
+                        <Button onClick={resetValuesFromLocal} className="col-span-4">Clear local storage</Button>
+                    </div>
                 </form>
             </Form>
         </div>
