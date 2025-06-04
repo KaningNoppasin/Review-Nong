@@ -1,6 +1,7 @@
-// import {
-//     useState
-// } from "react"
+import {
+    useEffect,
+    useState
+} from "react"
 import {
     toast
 } from "sonner"
@@ -66,6 +67,18 @@ const formSchema = z.object({
 });
 
 export default function MyForm() {
+    const [classNameValue, setClassNameValue] = useState<string>("state");
+
+    useEffect(() => {
+        const classNameData = "python"
+
+        setClassNameValue(classNameData)
+        const prevForm = form.getValues();
+        form.reset({
+            ...prevForm,
+            className: classNameData,
+        });
+    }, [])
 
     // const [files, setFiles] = useState<File[] | null>(null);
 
@@ -77,7 +90,8 @@ export default function MyForm() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            "date": new Date()
+            "date": new Date(),
+            "className": classNameValue
         },
     })
 
