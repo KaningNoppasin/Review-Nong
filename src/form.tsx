@@ -47,6 +47,7 @@ import {
 import {
     Calendar as CalendarIcon
 } from "lucide-react"
+import { User } from 'lucide-react';
 // import {
 //     CloudUpload,
 //     Paperclip
@@ -57,6 +58,24 @@ import {
 //     FileUploaderContent,
 //     FileUploaderItem
 // } from "@/components/ui/file-upload"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 
 const formSchema = z.object({
     className: z.string().min(1).max(20),
@@ -68,12 +87,12 @@ const formSchema = z.object({
 
 export default function MyForm() {
 
-    const getFormDataList = () : z.infer<typeof formSchema>[] | [] => {
+    const getFormDataList = (): z.infer<typeof formSchema>[] | [] => {
         const formDataListLocal = localStorage.getItem("formDataList");
         return formDataListLocal ? JSON.parse(formDataListLocal) : []
     }
 
-    const addFormDataList = (values : z.infer<typeof formSchema>) => {
+    const addFormDataList = (values: z.infer<typeof formSchema>) => {
         const formDataListLocal = getFormDataList()
         setFormDataList([...formDataListLocal, values])
     }
@@ -101,6 +120,19 @@ export default function MyForm() {
             username: "",
             reviewNong: ""
         });
+    }
+
+    const getDateFormat = (date: Date): string => {
+        const new_date = new Date(date)
+        const parts = new_date.toLocaleDateString("en-GB", {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        }).replace(",", "").split(" ");
+
+        const [weekday, day, month, year] = parts;
+        return `${weekday} ${day} ${month} ${year}`;
     }
 
     const [classNameValue, setClassNameValue] = useState<string>("");
@@ -148,7 +180,6 @@ export default function MyForm() {
 
     return (
         <div className="pl-5 pr-5">
-            <div>length = {formDataList?.length}</div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10">
 
@@ -317,8 +348,42 @@ export default function MyForm() {
                     /> */}
                     <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
                         <Button type="submit" className="col-span-4">Submit</Button>
-                        <Button type="button" onClick={resetFormDataList} className="col-span-4">Clear local storage</Button>
                         <Button type="button" onClick={clearForm} className="col-span-4">Clear Form</Button>
+                        {/* Dialog */}
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button className="col-span-4" variant="outline">Reviewed<User />{formDataList?.length}</Button>
+                            </DialogTrigger>
+                            {/* <DialogTrigger>Open</DialogTrigger> */}
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>ReviewNong</DialogTitle>
+                                    {/* <DialogDescription>
+                                    This action cannot be undone. This will permanently delete your account
+                                    and remove your data from our servers.
+                                </DialogDescription> */}
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>ClassName</TableHead>
+                                                <TableHead>Date</TableHead>
+                                                <TableHead>UserName</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {formDataList.map((formData: z.infer<typeof formSchema>, index: number) => (
+                                                <TableRow key={index}>
+                                                    <TableCell>{formData.className}</TableCell>
+                                                    <TableCell>{getDateFormat(formData.date)}</TableCell>
+                                                    <TableCell>{formData.username}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                    <Button type="button" onClick={resetFormDataList} className="col-span-4">Clear local storage</Button>
+                                </DialogHeader>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </form>
             </Form>
