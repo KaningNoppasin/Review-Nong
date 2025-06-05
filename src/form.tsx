@@ -79,7 +79,7 @@ export default function MyForm() {
     }
 
     const resetFormDataList = () => {
-        localStorage.setItem("formDataList", JSON.stringify([]));
+        setFormDataList([])
     }
 
     const clearFormWithOutClassName = () => {
