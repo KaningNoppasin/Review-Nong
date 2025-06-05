@@ -67,28 +67,19 @@ const formSchema = z.object({
 });
 
 export default function MyForm() {
-    const [classNameValue, setClassNameValue] = useState<string>("");
 
-    const getValuesFromLocal = () : z.infer<typeof formSchema>[] | [] => {
-        const valuesLocal = localStorage.getItem("values");
-        return valuesLocal ? JSON.parse(valuesLocal) : []
+    const getFormDataList = () : z.infer<typeof formSchema>[] | [] => {
+        const formDataListLocal = localStorage.getItem("formDataList");
+        return formDataListLocal ? JSON.parse(formDataListLocal) : []
     }
 
-    const addValuesFromLocal = (values : z.infer<typeof formSchema>) => {
-        const valuesLocal = localStorage.getItem("values");
-        let parsed: z.infer<typeof formSchema>[] = []
-
-        if (valuesLocal) {
-            parsed = JSON.parse(valuesLocal);
-        }
-        const updated = [...parsed, values];
-
-        // Save back to localStorage
-        localStorage.setItem("values", JSON.stringify(updated));
+    const addFormDataList = (values : z.infer<typeof formSchema>) => {
+        const formDataListLocal = getFormDataList()
+        setFormDataList([...formDataListLocal, values])
     }
 
-    const resetValuesFromLocal = () => {
-        localStorage.setItem("values", JSON.stringify([]));
+    const resetFormDataList = () => {
+        localStorage.setItem("formDataList", JSON.stringify([]));
     }
 
     const clearFormWithOutClassName = () => {
@@ -111,12 +102,15 @@ export default function MyForm() {
         });
     }
 
+    const [classNameValue, setClassNameValue] = useState<string>("");
+    const [formDataList, setFormDataList] = useState<z.infer<typeof formSchema>[]>(getFormDataList());
 
     useEffect(() => {
-        // clearFormWithOutClassName()
+        localStorage.setItem("formDataList", JSON.stringify(formDataList));
+    }, [formDataList])
 
-        const parsed = getValuesFromLocal()
-        console.log(parsed);
+    useEffect(() => {
+        clearFormWithOutClassName()
     }, [])
 
     // const [files, setFiles] = useState<File[] | null>(null);
@@ -138,7 +132,7 @@ export default function MyForm() {
         try {
             console.log(values);
             sessionStorage.setItem("className", values.className);
-            addValuesFromLocal(values)
+            addFormDataList(values)
             toast(
                 <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
                     <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -152,6 +146,7 @@ export default function MyForm() {
 
     return (
         <div className="pl-5 pr-5">
+            <div>length = {formDataList?.length}</div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10">
 
@@ -320,7 +315,7 @@ export default function MyForm() {
                     /> */}
                     <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
                         <Button type="submit" className="col-span-4">Submit</Button>
-                        <Button type="button" onClick={resetValuesFromLocal} className="col-span-4">Clear local storage</Button>
+                        <Button type="button" onClick={resetFormDataList} className="col-span-4">Clear local storage</Button>
                         <Button type="button" onClick={clearForm} className="col-span-4">Clear Form</Button>
                     </div>
                 </form>
