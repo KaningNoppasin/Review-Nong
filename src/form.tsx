@@ -81,6 +81,7 @@ const formSchema = z.object({
     className: z.string().min(1).max(20),
     date: z.coerce.date(),
     username: z.string().min(1).max(20),
+    topic: z.string().min(1).min(0).max(200),
     reviewNong: z.string().min(1).min(0).max(500),
     // selectFile: z.string()
 });
@@ -101,14 +102,18 @@ export default function MyForm() {
         setFormDataList([])
     }
 
-    const clearFormWithOutClassName = () => {
-        const classNameData = sessionStorage.getItem("className") ?? ""
+    const clearFormWithOutClassNameAndTopic = () => {
+        const classNameSession = sessionStorage.getItem("className") ?? ""
+        const topicSession = sessionStorage.getItem("topic") ?? ""
 
-        setClassNameValue(classNameData)
+        setClassNameData(classNameSession)
+        setTopicData(topicSession)
+
         form.reset({
-            className: classNameData,
+            className: classNameSession,
             date: new Date(),
             username: "",
+            topic: topicSession,
             reviewNong: ""
         });
     }
@@ -118,7 +123,8 @@ export default function MyForm() {
             className: "",
             date: new Date(),
             username: "",
-            reviewNong: ""
+            topic: "",
+            reviewNong: "",
         });
     }
 
@@ -135,7 +141,8 @@ export default function MyForm() {
         return `${weekday} ${day} ${month} ${year}`;
     }
 
-    const [classNameValue, setClassNameValue] = useState<string>("");
+    const [classNameData, setClassNameData] = useState<string>("");
+    const [topicData, setTopicData] = useState<string>("");
     const [formDataList, setFormDataList] = useState<z.infer<typeof formSchema>[]>(getFormDataList());
 
     useEffect(() => {
@@ -143,7 +150,7 @@ export default function MyForm() {
     }, [formDataList])
 
     useEffect(() => {
-        clearFormWithOutClassName()
+        clearFormWithOutClassNameAndTopic()
     }, [])
 
     // const [files, setFiles] = useState<File[] | null>(null);
@@ -157,7 +164,8 @@ export default function MyForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             "date": new Date(),
-            "className": classNameValue
+            "className": classNameData,
+            "topic": topicData
         },
     })
 
@@ -165,8 +173,9 @@ export default function MyForm() {
         try {
             console.log(values);
             sessionStorage.setItem("className", values.className);
+            sessionStorage.setItem("topic", values.topic);
             addFormDataList(values)
-            clearFormWithOutClassName()
+            clearFormWithOutClassNameAndTopic()
             toast(
                 <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
                     <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -277,6 +286,32 @@ export default function MyForm() {
 
                     </div>
 
+                    {/* topic */}
+                    <FormField
+                        control={form.control}
+                        name="topic"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Topic</FormLabel>
+                                <FormControl>
+                                    {/* <Input
+                                        placeholder="ReviewNong"
+
+                                        type=""
+                                        {...field} /> */}
+                                    <Textarea
+                                        placeholder="Topic"
+                                        className="resize-none h-40"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                {/* <FormDescription>This is your public ReviewNong.</FormDescription> */}
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* reviewNong */}
                     <FormField
                         control={form.control}
                         name="reviewNong"
@@ -291,7 +326,7 @@ export default function MyForm() {
                                         {...field} /> */}
                                     <Textarea
                                         placeholder="ReviewNong"
-                                        className="resize-none h-80"
+                                        className="resize-none h-60"
                                         {...field}
                                     />
                                 </FormControl>
@@ -346,6 +381,7 @@ export default function MyForm() {
                             </FormItem>
                         )}
                     /> */}
+
                     <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
                         <Button type="submit" className="col-span-4">Submit</Button>
                         <Button type="button" onClick={clearForm} className="col-span-4">Clear Form</Button>
