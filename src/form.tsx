@@ -86,10 +86,11 @@ export default function MyForm() {
         const classNameData = sessionStorage.getItem("className") ?? ""
 
         setClassNameValue(classNameData)
-        const prevForm = form.getValues();
         form.reset({
-            ...prevForm,
             className: classNameData,
+            date: new Date(),
+            username: "",
+            reviewNong: ""
         });
     }
 
@@ -133,6 +134,7 @@ export default function MyForm() {
             console.log(values);
             sessionStorage.setItem("className", values.className);
             addFormDataList(values)
+            clearFormWithOutClassName()
             toast(
                 <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
                     <code className="text-white">{JSON.stringify(values, null, 2)}</code>
