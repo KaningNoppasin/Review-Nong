@@ -103,12 +103,17 @@ export default function MyForm() {
     }
 
     const clearForm = () => {
-        form.reset();
+        form.reset({
+            className: "",
+            date: new Date(),
+            username: "",
+            reviewNong: ""
+        });
     }
 
 
     useEffect(() => {
-        clearFormWithOutClassName()
+        // clearFormWithOutClassName()
 
         const parsed = getValuesFromLocal()
         console.log(parsed);
@@ -315,7 +320,8 @@ export default function MyForm() {
                     /> */}
                     <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
                         <Button type="submit" className="col-span-4">Submit</Button>
-                        <Button onClick={resetValuesFromLocal} className="col-span-4">Clear local storage</Button>
+                        <Button type="button" onClick={resetValuesFromLocal} className="col-span-4">Clear local storage</Button>
+                        <Button type="button" onClick={clearForm} className="col-span-4">Clear Form</Button>
                     </div>
                 </form>
             </Form>
