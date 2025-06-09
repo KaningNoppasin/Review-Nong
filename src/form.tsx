@@ -47,7 +47,7 @@ import {
 import {
     Calendar as CalendarIcon
 } from "lucide-react"
-import { User } from 'lucide-react';
+import { User, Copy } from 'lucide-react';
 // import {
 //     CloudUpload,
 //     Paperclip
@@ -141,7 +141,7 @@ export default function MyForm() {
         return `${weekday} ${day} ${month} ${year}`;
     }
 
-    const formatSingleReviewText = (formData: z.infer<typeof formSchema>) : string => {
+    const formatSingleReviewText = (formData: z.infer<typeof formSchema>): string => {
         return `
 ${getDateFormat(formData.date)}
 ${formData.className}
@@ -156,7 +156,7 @@ ${formData.reviewNong}
     }
 
     const compileAllReviewText = () => {
-        let reviewText : string = ""
+        let reviewText: string = ""
         formDataList.map((formData: z.infer<typeof formSchema>) => (
             reviewText += formatSingleReviewText(formData)
         ))
@@ -412,35 +412,41 @@ ${formData.reviewNong}
                             <DialogTrigger asChild>
                                 <Button className="col-span-4" variant="outline">Reviewed<User />{formDataList?.length}</Button>
                             </DialogTrigger>
-                            {/* <DialogTrigger>Open</DialogTrigger> */}
                             <DialogContent>
+                            {/* <DialogContent> */}
                                 <DialogHeader>
                                     <DialogTitle>ReviewNong</DialogTitle>
-                                    {/* <DialogDescription>
-                                    This action cannot be undone. This will permanently delete your account
-                                    and remove your data from our servers.
-                                </DialogDescription> */}
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>ClassName</TableHead>
-                                                <TableHead>Date</TableHead>
-                                                <TableHead>UserName</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {formDataList.map((formData: z.infer<typeof formSchema>, index: number) => (
-                                                <TableRow key={index}>
-                                                    <TableCell>{formData.className}</TableCell>
-                                                    <TableCell>{getDateFormat(formData.date)}</TableCell>
-                                                    <TableCell>{formData.username}</TableCell>
+                                    {/* Table of data */}
+                                    <div className="max-h-[500px] max-w-[300px] sm:max-w-full overflow-auto">
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead>ClassName</TableHead>
+                                                    <TableHead>Date</TableHead>
+                                                    <TableHead>UserName</TableHead>
+                                                    <TableHead>Copy</TableHead>
                                                 </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {formDataList.map((formData: z.infer<typeof formSchema>, index: number) => (
+                                                    <TableRow key={index}>
+                                                        <TableCell>{formData.className}</TableCell>
+                                                        <TableCell>{getDateFormat(formData.date)}</TableCell>
+                                                        <TableCell>{formData.username}</TableCell>
+                                                        <TableCell>
+                                                            <Button variant="outline">
+                                                                <Copy />
+                                                            </Button>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                        {/* <pre>{compileAllReviewText()}</pre> */}
+                                    </div>
                                     <Button type="button" onClick={resetFormDataList} className="col-span-4">Clear local storage</Button>
                                     <DialogDescription>
-                                            <pre>{compileAllReviewText()}</pre>
+                                        {/* <pre>{compileAllReviewText()}</pre> */}
                                     </DialogDescription>
                                 </DialogHeader>
                             </DialogContent>
