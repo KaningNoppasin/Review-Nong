@@ -167,6 +167,7 @@ ${formData.reviewNong}
         try {
             await navigator.clipboard.writeText(formatSingleReviewText(formData));
             console.log('Text copied to clipboard');
+            toast("Copy !")
         } catch (error) {
             console.error('Failed to copy text: ', error);
         }
@@ -208,11 +209,12 @@ ${formData.reviewNong}
             sessionStorage.setItem("topic", values.topic);
             addFormDataList(values)
             clearFormWithOutClassNameAndTopic()
-            toast(
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-                </pre>
-            );
+            toast("Success")
+            // toast(
+            //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            //         <code className="text-white">{JSON.stringify(values, null, 2)}</code>
+            //     </pre>
+            // );
         } catch (error) {
             console.error("Form submission error", error);
             toast.error("Failed to submit the form. Please try again.");
