@@ -61,7 +61,7 @@ import { User } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
-    // DialogDescription,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -139,6 +139,28 @@ export default function MyForm() {
 
         const [weekday, day, month, year] = parts;
         return `${weekday} ${day} ${month} ${year}`;
+    }
+
+    const formatSingleReviewText = (formData: z.infer<typeof formSchema>) : string => {
+        return `
+${getDateFormat(formData.date)}
+${formData.className}
+Topic: ${formData.topic}
+
+Nong: ${formData.username}
+
+Review:
+${formData.reviewNong}
+------------------------------
+`
+    }
+
+    const compileAllReviewText = () => {
+        let reviewText : string = ""
+        formDataList.map((formData: z.infer<typeof formSchema>) => (
+            reviewText += formatSingleReviewText(formData)
+        ))
+        return reviewText
     }
 
     const [classNameData, setClassNameData] = useState<string>("");
@@ -417,6 +439,9 @@ export default function MyForm() {
                                         </TableBody>
                                     </Table>
                                     <Button type="button" onClick={resetFormDataList} className="col-span-4">Clear local storage</Button>
+                                    <DialogDescription>
+                                            <pre>{compileAllReviewText()}</pre>
+                                    </DialogDescription>
                                 </DialogHeader>
                             </DialogContent>
                         </Dialog>
