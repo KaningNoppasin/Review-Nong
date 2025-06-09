@@ -163,6 +163,16 @@ ${formData.reviewNong}
         return reviewText
     }
 
+    const handleClipboard = async (formData: z.infer<typeof formSchema>) => {
+        try {
+            await navigator.clipboard.writeText(formatSingleReviewText(formData));
+            console.log('Text copied to clipboard');
+        } catch (error) {
+            console.error('Failed to copy text: ', error);
+        }
+    };
+
+
     const [classNameData, setClassNameData] = useState<string>("");
     const [topicData, setTopicData] = useState<string>("");
     const [formDataList, setFormDataList] = useState<z.infer<typeof formSchema>[]>(getFormDataList());
@@ -413,7 +423,7 @@ ${formData.reviewNong}
                                 <Button className="col-span-4" variant="outline">Reviewed<User />{formDataList?.length}</Button>
                             </DialogTrigger>
                             <DialogContent>
-                            {/* <DialogContent> */}
+                                {/* <DialogContent> */}
                                 <DialogHeader>
                                     <DialogTitle>ReviewNong</DialogTitle>
                                     {/* Table of data */}
@@ -434,7 +444,7 @@ ${formData.reviewNong}
                                                         <TableCell>{getDateFormat(formData.date)}</TableCell>
                                                         <TableCell>{formData.username}</TableCell>
                                                         <TableCell>
-                                                            <Button variant="outline">
+                                                            <Button variant="outline" onClick={() => handleClipboard(formData)}>
                                                                 <Copy />
                                                             </Button>
                                                         </TableCell>
