@@ -224,6 +224,7 @@ ${formData.reviewNong}
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10">
 
+                    {/* Input Field */}
                     <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
 
                         {/* className */}
@@ -423,37 +424,43 @@ ${formData.reviewNong}
                                 <Button className="col-span-4" variant="outline">Reviewed<User />{formDataList?.length}</Button>
                             </DialogTrigger>
                             <DialogContent>
-                                {/* <DialogContent> */}
-                                <DialogHeader>
+                                <DialogHeader className="overflow-auto">
                                     <DialogTitle>ReviewNong</DialogTitle>
                                     {/* Table of data */}
-                                    <div className="max-h-[500px] max-w-[300px] sm:max-w-full overflow-auto">
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead>ClassName</TableHead>
-                                                    <TableHead>Date</TableHead>
-                                                    <TableHead>UserName</TableHead>
-                                                    <TableHead>Copy</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {formDataList.map((formData: z.infer<typeof formSchema>, index: number) => (
-                                                    <TableRow key={index}>
-                                                        <TableCell>{formData.className}</TableCell>
-                                                        <TableCell>{getDateFormat(formData.date)}</TableCell>
-                                                        <TableCell>{formData.username}</TableCell>
-                                                        <TableCell>
-                                                            <Button variant="outline" onClick={() => handleClipboard(formData)}>
-                                                                <Copy />
-                                                            </Button>
+                                        <div className="max-h-[500px] max-w-full overflow-auto">
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead>ClassName</TableHead>
+                                                        <TableHead>Date</TableHead>
+                                                        <TableHead>UserName</TableHead>
+                                                        <TableHead>Copy</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    <TableRow>
+                                                        <TableCell colSpan={4} className="font-semibold bg-gray-50 text-center">
+                                                            {getDateFormat(formDataList[0].date)}
                                                         </TableCell>
                                                     </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                        {/* <pre>{compileAllReviewText()}</pre> */}
-                                    </div>
+                                                    {formDataList.map((formData: z.infer<typeof formSchema>, index: number) => (
+                                                        <TableRow key={index}>
+                                                            <TableCell>{formData.className}</TableCell>
+                                                            <TableCell>{getDateFormat(formData.date)}</TableCell>
+                                                            <TableCell>{formData.username}</TableCell>
+                                                            <TableCell>
+                                                                <Button variant="outline" onClick={() => handleClipboard(formData)}>
+                                                                    <Copy />
+                                                                </Button>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                            {/* <pre>{compileAllReviewText()}</pre> */}
+                                        </div>
+
+                                    {/* </div> */}
                                     <Button type="button" onClick={resetFormDataList} className="col-span-4">Clear local storage</Button>
                                     <DialogDescription>
                                         {/* <pre>{compileAllReviewText()}</pre> */}
