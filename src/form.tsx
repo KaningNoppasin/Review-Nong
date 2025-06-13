@@ -155,19 +155,26 @@ ${formData.reviewNong}
 `
     }
 
-    const compileAllReviewText = () => {
-        let reviewText: string = ""
-        formDataList.map((formData: z.infer<typeof formSchema>) => (
-            reviewText += formatSingleReviewText(formData)
-        ))
-        return reviewText
-    }
+    // const compileAllReviewText = () => {
+    //     let reviewText: string = ""
+    //     formDataList.map((formData: z.infer<typeof formSchema>) => (
+    //         reviewText += formatSingleReviewText(formData)
+    //     ))
+    //     return reviewText
+    // }
 
-    const handleClipboard = async (formData: z.infer<typeof formSchema>) => {
+    const handleClipboard = async (formData: z.infer<typeof formSchema>, index: number) => {
         try {
             await navigator.clipboard.writeText(formatSingleReviewText(formData));
             console.log('Text copied to clipboard');
             toast("Copy !")
+
+            setCopiedList(prev => {
+                const newCopiedList = [...prev];
+                newCopiedList[index] = true;
+                return newCopiedList;
+            });
+
         } catch (error) {
             console.error('Failed to copy text: ', error);
         }
@@ -177,6 +184,7 @@ ${formData.reviewNong}
     const [classNameData, setClassNameData] = useState<string>("");
     const [topicData, setTopicData] = useState<string>("");
     const [formDataList, setFormDataList] = useState<z.infer<typeof formSchema>[]>(getFormDataList());
+    const [copiedList, setCopiedList] = useState<boolean[]>([false]);
 
     useEffect(() => {
         localStorage.setItem("formDataList", JSON.stringify(formDataList));
@@ -429,38 +437,39 @@ ${formData.reviewNong}
                                 <DialogHeader className="overflow-auto">
                                     <DialogTitle>ReviewNong</DialogTitle>
                                     {/* Table of data */}
-                                        <div className="max-h-[500px] max-w-full overflow-auto">
-                                            <Table>
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        <TableHead>ClassName</TableHead>
-                                                        <TableHead>Date</TableHead>
-                                                        <TableHead>UserName</TableHead>
-                                                        <TableHead>Copy</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    <TableRow>
-                                                        <TableCell colSpan={4} className="font-semibold bg-gray-50 text-center">
-                                                            {getDateFormat(formDataList[0].date)}
+                                    <div className="max-h-[500px] max-w-full overflow-auto">
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead>ClassName</TableHead>
+                                                    <TableHead>Date</TableHead>
+                                                    <TableHead>UserName</TableHead>
+                                                    <TableHead>Copy</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {/* <TableRow>
+                                                    <TableCell colSpan={4} className="font-semibold bg-gray-50 text-center">
+                                                        {getDateFormat(formDataList[0].date)}
+                                                    </TableCell>
+                                                </TableRow> */}
+                                                {formDataList.map((formData: z.infer<typeof formSchema>, index: number) => (
+                                                    <TableRow key={index}>
+                                                        <TableCell>{formData.className}</TableCell>
+                                                        <TableCell>{getDateFormat(formData.date)}</TableCell>
+                                                        <TableCell>{formData.username}</TableCell>
+                                                        <TableCell>
+                                                            <Button variant="outline" onClick={() => handleClipboard(formData, index)}>
+                                                                <Copy />
+                                                                <pre>{copiedList[index] ? <div>T</div> : <div>F</div>}</pre>
+                                                            </Button>
                                                         </TableCell>
                                                     </TableRow>
-                                                    {formDataList.map((formData: z.infer<typeof formSchema>, index: number) => (
-                                                        <TableRow key={index}>
-                                                            <TableCell>{formData.className}</TableCell>
-                                                            <TableCell>{getDateFormat(formData.date)}</TableCell>
-                                                            <TableCell>{formData.username}</TableCell>
-                                                            <TableCell>
-                                                                <Button variant="outline" onClick={() => handleClipboard(formData)}>
-                                                                    <Copy />
-                                                                </Button>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                            {/* <pre>{compileAllReviewText()}</pre> */}
-                                        </div>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                        {/* <pre>{compileAllReviewText()}</pre> */}
+                                    </div>
 
                                     {/* </div> */}
                                     <Button type="button" onClick={resetFormDataList} className="col-span-4">Clear local storage</Button>
