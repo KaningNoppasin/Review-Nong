@@ -41,6 +41,7 @@ import { z } from "zod"
 import { formSchema } from "@/schemas/formSchema";
 import { InputTextField } from "./components/form/input-text-field"
 import { DateField } from "./components/form/date-field"
+import { AlertDialogButton } from './components/dialog/alert-dialog-button';
 
 export default function MyForm() {
 
@@ -283,8 +284,13 @@ ${formData.reviewNong}
                                         {/* <pre>{compileAllReviewText()}</pre> */}
                                     </div>
 
-                                    {/* </div> */}
-                                    <Button type="button" onClick={resetFormDataList} className="col-span-4">Clear local storage</Button>
+                                    <AlertDialogButton
+                                        buttonLabel="Clear local storage"
+                                        title="Do you want to delete?"
+                                        description="It will delete all reviewed"
+                                        variant="destructive"
+                                        handelContinue={resetFormDataList}
+                                    />
                                     <DialogDescription>
                                         {/* <pre>{compileAllReviewText()}</pre> */}
                                     </DialogDescription>
