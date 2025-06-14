@@ -56,6 +56,7 @@ export default function MyForm() {
     }
 
     const resetFormDataList = () => {
+        toast("Clear local storage !")
         setFormDataList([])
     }
 
@@ -125,7 +126,7 @@ ${formData.reviewNong}
         try {
             await navigator.clipboard.writeText(formatSingleReviewText(formData));
             console.log('Text copied to clipboard');
-            toast("Copy !")
+            toast("Copied !")
 
             setCopiedList(prev => {
                 const newCopiedList = [...prev];
@@ -194,7 +195,7 @@ ${formData.reviewNong}
                                 formControl={form.control}
                                 name="className"
                                 label="ClassName"
-                                placeholder="Python, Unity , etc."
+                                placeholder="Python 08:00-10:00"
                             />
                         </div>
 
@@ -212,7 +213,7 @@ ${formData.reviewNong}
                                 formControl={form.control}
                                 name="username"
                                 label="Username"
-                                placeholder="NongNing ..."
+                                placeholder="Ning"
                             />
                         </div>
 
@@ -223,7 +224,7 @@ ${formData.reviewNong}
                         formControl={form.control}
                         name="topic"
                         label="Topic"
-                        placeholder="Topic"
+                        placeholder="Discord Bot ..."
                         isTextArea={true}
                         className="resize-none h-40"
                     />
@@ -273,8 +274,8 @@ ${formData.reviewNong}
                                                         <TableCell>{formData.username}</TableCell>
                                                         <TableCell>
                                                             <Button variant="outline" onClick={() => handleClipboard(formData, index)}>
+                                                                <pre>{copiedList[index] ? "Copied" : "Copy"}</pre>
                                                                 <Copy />
-                                                                <pre>{copiedList[index] ? <div>T</div> : <div>F</div>}</pre>
                                                             </Button>
                                                         </TableCell>
                                                     </TableRow>
