@@ -20,18 +20,11 @@ import {
 import {
     Form,
     FormControl,
-    // FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import {
-    Textarea
-} from "@/components/ui/textarea"
-import {
-    Input
-} from "@/components/ui/input"
 import {
     format
 } from "date-fns"
@@ -47,16 +40,6 @@ import {
     Calendar as CalendarIcon
 } from "lucide-react"
 import { User, Copy } from 'lucide-react';
-// import {
-//     CloudUpload,
-//     Paperclip
-// } from "lucide-react"
-// import {
-//     FileInput,
-//     FileUploader,
-//     FileUploaderContent,
-//     FileUploaderItem
-// } from "@/components/ui/file-upload"
 import {
     Dialog,
     DialogContent,
@@ -78,6 +61,7 @@ import {
 
 import { z } from "zod"
 import { formSchema } from "@/schemas/formSchema";
+import { InputTextField } from "./components/form/input-text-field"
 
 export default function MyForm() {
 
@@ -138,7 +122,8 @@ export default function MyForm() {
         return `
 ${getDateFormat(formData.date)}
 ${formData.className}
-Topic: ${formData.topic}
+Topic:
+${formData.topic}
 
 Nong: ${formData.username}
 
@@ -187,13 +172,6 @@ ${formData.reviewNong}
         clearFormWithOutClassNameAndTopic()
     }, [])
 
-    // const [files, setFiles] = useState<File[] | null>(null);
-
-    // const dropZoneConfig = {
-    //     maxFiles: 5,
-    //     maxSize: 1024 * 1024 * 4,
-    //     multiple: true,
-    // };
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -232,24 +210,11 @@ ${formData.reviewNong}
 
                         {/* className */}
                         <div className="col-span-4">
-
-                            <FormField
-                                control={form.control}
+                            <InputTextField
+                                formControl={form.control}
                                 name="className"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>ClassName</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Python, Unity , etc."
-
-                                                type="text"
-                                                {...field} />
-                                        </FormControl>
-                                        {/* <FormDescription>This is your public class name.</FormDescription> */}
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label="ClassName"
+                                placeholder="Python, Unity , etc."
                             />
                         </div>
 
@@ -299,124 +264,35 @@ ${formData.reviewNong}
 
                         {/* username */}
                         <div className="col-span-4">
-
-                            <FormField
-                                control={form.control}
+                            <InputTextField
+                                formControl={form.control}
                                 name="username"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Username</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="NongNing ..."
-
-                                                type=""
-                                                {...field} />
-                                        </FormControl>
-                                        {/* <FormDescription>This is your public user name.</FormDescription> */}
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label="Username"
+                                placeholder="NongNing ..."
                             />
                         </div>
 
                     </div>
 
                     {/* topic */}
-                    <FormField
-                        control={form.control}
+                    <InputTextField
+                        formControl={form.control}
                         name="topic"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Topic</FormLabel>
-                                <FormControl>
-                                    {/* <Input
-                                        placeholder="ReviewNong"
-
-                                        type=""
-                                        {...field} /> */}
-                                    <Textarea
-                                        placeholder="Topic"
-                                        className="resize-none h-40"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                {/* <FormDescription>This is your public ReviewNong.</FormDescription> */}
-                                <FormMessage />
-                            </FormItem>
-                        )}
+                        label="Topic"
+                        placeholder="Topic"
+                        isTextArea={true}
+                        className="resize-none h-40"
                     />
 
                     {/* reviewNong */}
-                    <FormField
-                        control={form.control}
+                    <InputTextField
+                        formControl={form.control}
                         name="reviewNong"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>ReviewNong</FormLabel>
-                                <FormControl>
-                                    {/* <Input
-                                        placeholder="ReviewNong"
-
-                                        type=""
-                                        {...field} /> */}
-                                    <Textarea
-                                        placeholder="ReviewNong"
-                                        className="resize-none h-60"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                {/* <FormDescription>This is your public ReviewNong.</FormDescription> */}
-                                <FormMessage />
-                            </FormItem>
-                        )}
+                        label="ReviewNong"
+                        placeholder="ReviewNong"
+                        isTextArea={true}
+                        className="resize-none h-60"
                     />
-
-                    {/* <FormField
-                        control={form.control}
-                        name="selectFile"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Select File</FormLabel>
-                                <FormControl>
-                                    <FileUploader
-                                        value={files}
-                                        onValueChange={setFiles}
-                                        dropzoneOptions={dropZoneConfig}
-                                        className="relative bg-background rounded-lg p-2"
-                                    >
-                                        <FileInput
-                                            id="fileInput"
-                                            className="outline-dashed outline-1 outline-slate-500"
-                                        >
-                                            <div className="flex items-center justify-center flex-col p-8 w-full ">
-                                                <CloudUpload className='text-gray-500 w-10 h-10' />
-                                                <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
-                                                    <span className="font-semibold">Click to upload</span>
-                                                    &nbsp; or drag and drop
-                                                </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                    SVG, PNG, JPG or GIF
-                                                </p>
-                                            </div>
-                                        </FileInput>
-                                        <FileUploaderContent>
-                                            {files &&
-                                                files.length > 0 &&
-                                                files.map((file, i) => (
-                                                    <FileUploaderItem key={i} index={i}>
-                                                        <Paperclip className="h-4 w-4 stroke-current" />
-                                                        <span>{file.name}</span>
-                                                    </FileUploaderItem>
-                                                ))}
-                                        </FileUploaderContent>
-                                    </FileUploader>
-                                </FormControl>
-                                <FormDescription>Select a file to upload.</FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    /> */}
 
                     <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
                         <Button type="submit" className="col-span-4">Submit</Button>
