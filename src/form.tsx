@@ -12,33 +12,11 @@ import {
     zodResolver
 } from "@hookform/resolvers/zod"
 import {
-    cn
-} from "@/lib/utils"
-import {
     Button
 } from "@/components/ui/button"
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+    Form
 } from "@/components/ui/form"
-import {
-    format
-} from "date-fns"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger
-} from "@/components/ui/popover"
-import {
-    Calendar
-} from "@/components/ui/calendar"
-import {
-    Calendar as CalendarIcon
-} from "lucide-react"
 import { User, Copy } from 'lucide-react';
 import {
     Dialog,
@@ -62,6 +40,7 @@ import {
 import { z } from "zod"
 import { formSchema } from "@/schemas/formSchema";
 import { InputTextField } from "./components/form/input-text-field"
+import { DateField } from "./components/form/date-field"
 
 export default function MyForm() {
 
@@ -220,45 +199,9 @@ ${formData.reviewNong}
 
                         {/* Date */}
                         <div className="col-span-4">
-
-                            <FormField
-                                control={form.control}
-                                name="date"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-col">
-                                        <FormLabel>Date</FormLabel>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={cn(
-                                                            "w-[240px] pl-3 text-left font-normal",
-                                                            !field.value && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        {field.value ? (
-                                                            format(field.value, "PPP")
-                                                        ) : (
-                                                            <span>Pick a date</span>
-                                                        )}
-                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                    </Button>
-                                                </FormControl>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="start">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={field.value}
-                                                    onSelect={field.onChange}
-                                                    initialFocus
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
-                                        {/* <FormDescription>Your date .</FormDescription> */}
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                            <DateField
+                                formControl={form.control}
+                                label="Date"
                             />
                         </div>
 

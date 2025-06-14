@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/input"
 
 
-interface ClassNameFieldProps {
+interface InputTextFieldProps {
     formControl: Control<z.infer<typeof formSchema>>;
     name: Exclude<Path<z.infer<typeof formSchema>>, "date">;
     label: string;
@@ -26,7 +26,7 @@ interface ClassNameFieldProps {
     className?: string;
 }
 
-export const InputTextField = ({ formControl, name, label, placeholder, className, isTextArea = false }: ClassNameFieldProps) => {
+export const InputTextField = ({ formControl, name, label, placeholder, className, isTextArea = false }: InputTextFieldProps) => {
     return (
         <FormField
             control={formControl}
