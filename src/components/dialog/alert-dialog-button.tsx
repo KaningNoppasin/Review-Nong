@@ -15,7 +15,7 @@ import type { VariantProps } from "class-variance-authority";
 import { buttonVariants } from "@/components/ui/button";
 
 interface AlertProps {
-    buttonLabel: string;
+    buttonLabel: React.ReactNode;
     title: string;
     description?: string;
     variant?: VariantProps<typeof buttonVariants>["variant"]

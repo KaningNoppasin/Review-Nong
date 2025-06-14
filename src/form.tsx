@@ -17,7 +17,7 @@ import {
 import {
     Form
 } from "@/components/ui/form"
-import { User, Copy } from 'lucide-react';
+import { User, Copy, Trash } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -58,6 +58,12 @@ export default function MyForm() {
     const resetFormDataList = () => {
         toast("Clear local storage !")
         setFormDataList([])
+    }
+
+    const deleteFormData = (indexToRemove: number) => {
+        const formDataListRemoved = [...formDataList.slice(0, indexToRemove), ...formDataList.slice(indexToRemove + 1)];
+        toast("Delete !")
+        setFormDataList(formDataListRemoved)
     }
 
     const clearFormWithOutClassNameAndTopic = () => {
@@ -212,7 +218,7 @@ ${formData.reviewNong}
                             <InputTextField
                                 formControl={form.control}
                                 name="username"
-                                label="Username"
+                                label="Nong"
                                 placeholder="Ning"
                             />
                         </div>
@@ -255,10 +261,11 @@ ${formData.reviewNong}
                                         <Table>
                                             <TableHeader>
                                                 <TableRow>
-                                                    <TableHead>ClassName</TableHead>
+                                                    <TableHead>Class</TableHead>
                                                     <TableHead>Date</TableHead>
-                                                    <TableHead>UserName</TableHead>
+                                                    <TableHead>Nong</TableHead>
                                                     <TableHead>Copy</TableHead>
+                                                    <TableHead>Delete</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
@@ -278,6 +285,15 @@ ${formData.reviewNong}
                                                                 <Copy />
                                                             </Button>
                                                         </TableCell>
+                                                        <TableCell>
+                                                            <AlertDialogButton
+                                                                buttonLabel={<Trash />}
+                                                                title={`Do you want to delete?`}
+                                                                description={`It will delete ${formData.username} reviewed`}
+                                                                handelContinue={() => deleteFormData(index)}
+                                                                variant="outline"
+                                                            />
+                                                        </TableCell>
                                                     </TableRow>
                                                 ))}
                                             </TableBody>
@@ -285,7 +301,7 @@ ${formData.reviewNong}
                                     </div>
 
                                     <AlertDialogButton
-                                        buttonLabel="Clear local storage"
+                                        buttonLabel={<>Delete All<Trash /></>}
                                         title="Do you want to delete?"
                                         description="It will delete all reviewed"
                                         handelContinue={resetFormDataList}
