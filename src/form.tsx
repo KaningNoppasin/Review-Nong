@@ -11,7 +11,6 @@ import {
 import {
     zodResolver
 } from "@hookform/resolvers/zod"
-import * as z from "zod"
 import {
     cn
 } from "@/lib/utils"
@@ -77,14 +76,8 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-const formSchema = z.object({
-    className: z.string().min(1).max(20),
-    date: z.coerce.date(),
-    username: z.string().min(1).max(20),
-    topic: z.string().min(1).min(0).max(200),
-    reviewNong: z.string().min(1).min(0).max(500),
-    // selectFile: z.string()
-});
+import { z } from "zod"
+import { formSchema } from "@/schemas/formSchema";
 
 export default function MyForm() {
 
