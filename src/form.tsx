@@ -268,13 +268,13 @@ ${formData.reviewNong}
                                                     </TableCell>
                                                 </TableRow> */}
                                                 {formDataList.map((formData: z.infer<typeof formSchema>, index: number) => (
-                                                    <TableRow key={index}>
+                                                    <TableRow key={index} className={copiedList[index] ? "bg-gray-100" : ""}>
                                                         <TableCell>{formData.className}</TableCell>
                                                         <TableCell>{getDateFormat(formData.date)}</TableCell>
                                                         <TableCell>{formData.username}</TableCell>
                                                         <TableCell>
                                                             <Button variant="outline" onClick={() => handleClipboard(formData, index)}>
-                                                                <pre>{copiedList[index] ? "Copied" : "Copy"}</pre>
+                                                                {/* <pre>{copiedList[index] ? "Copied" : "Copy"}</pre> */}
                                                                 <Copy />
                                                             </Button>
                                                         </TableCell>
@@ -282,14 +282,12 @@ ${formData.reviewNong}
                                                 ))}
                                             </TableBody>
                                         </Table>
-                                        {/* <pre>{compileAllReviewText()}</pre> */}
                                     </div>
 
                                     <AlertDialogButton
                                         buttonLabel="Clear local storage"
                                         title="Do you want to delete?"
                                         description="It will delete all reviewed"
-                                        variant="destructive"
                                         handelContinue={resetFormDataList}
                                     />
                                     <DialogDescription>
