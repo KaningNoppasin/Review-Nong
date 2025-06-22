@@ -153,6 +153,8 @@ ${formData.reviewNong}
     const [topicData, setTopicData] = useState<string>("");
     const [formDataList, setFormDataList] = useState<z.infer<typeof formSchema>[]>(getFormDataList());
     const [copiedList, setCopiedList] = useState<boolean[]>([false]);
+    const [isOpenReviewed, setIsOpenReviewed] = useState<boolean>(false);
+    const [isOpenEdited, setIsOpenEdited] = useState<boolean>(false);
 
     useEffect(() => {
         localStorage.setItem("formDataList", JSON.stringify(formDataList));
@@ -210,101 +212,112 @@ ${formData.reviewNong}
                     <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
                         <Button type="submit" className="col-span-4">Submit</Button>
                         <Button type="button" onClick={clearForm} className="col-span-4">Clear Form</Button>
-                        {/* Dialog */}
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button className="col-span-4" variant="outline">Reviewed<User />{formDataList?.length}</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader className="overflow-auto">
-                                    <DialogTitle>ReviewNong</DialogTitle>
-                                    {/* Table of data */}
-                                    <div className="max-h-[500px] max-w-full overflow-auto">
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead>Class</TableHead>
-                                                    <TableHead>Date</TableHead>
-                                                    <TableHead>Nong</TableHead>
-                                                    <TableHead>Copy</TableHead>
-                                                    <TableHead>Edit</TableHead>
-                                                    <TableHead>Delete</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {/* <TableRow>
-                                                    <TableCell colSpan={4} className="font-semibold bg-gray-50 text-center">
-                                                        {getDateFormat(formDataList[0].date)}
-                                                    </TableCell>
-                                                </TableRow> */}
-                                                {formDataList.map((formData: z.infer<typeof formSchema>, index: number) => (
-                                                    <TableRow key={index} className={copiedList[index] ? "bg-gray-100" : ""}>
-                                                        <TableCell>{formData.className}</TableCell>
-                                                        <TableCell>{getDateFormat(formData.date)}</TableCell>
-                                                        <TableCell>{formData.username}</TableCell>
-                                                        <TableCell>
-                                                            {/* Copy Button */}
-                                                            <Button variant="outline" onClick={() => handleClipboard(formData, index)}>
-                                                                {/* <pre>{copiedList[index] ? "Copied" : "Copy"}</pre> */}
-                                                                <Copy />
-                                                            </Button>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            {/* Edit Button */}
-                                                            <Dialog>
-                                                                <DialogTrigger asChild>
-                                                                    <Button variant="outline" onClick={() => handleEdit(formData)}><Pencil /></Button>
-                                                                </DialogTrigger>
-                                                                <DialogContent>
-                                                                    <DialogHeader className="overflow-auto">
-                                                                        <DialogTitle>Edit</DialogTitle>
-                                                                        <form id={`edit-form-${index}`} onSubmit={(e) =>
-                                                                            formEdit.handleSubmit((values) => onEditSubmit(values, index))(e)
-                                                                        }>
-                                                                            <div className="max-h-[500px] max-w-full overflow-auto">
-                                                                                <ReviewFormField formControl={formEdit.control} />
-                                                                            </div>
-                                                                            <Button type="submit" form={`edit-form-${index}`}>Submit</Button>
-                                                                        </form>
-                                                                        <DialogDescription>
-                                                                            {/* <pre>{compileAllReviewText()}</pre> */}
-                                                                        </DialogDescription>
-                                                                    </DialogHeader>
-                                                                </DialogContent>
-                                                            </Dialog>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <AlertDialogButton
-                                                                buttonLabel={<Trash />}
-                                                                title={`Do you want to delete?`}
-                                                                description={`It will delete ${formData.username} reviewed`}
-                                                                handelContinue={() => deleteFormData(index)}
-                                                                variant="outline"
-                                                            />
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </div>
 
-                                    <AlertDialogButton
-                                        buttonLabel={<>Delete All<Trash /></>}
-                                        title="Do you want to delete?"
-                                        description="It will delete all reviewed"
-                                        handelContinue={resetFormDataList}
-                                    />
-                                    <DialogDescription>
-                                        {/* <pre>{compileAllReviewText()}</pre> */}
-                                    </DialogDescription>
-                                </DialogHeader>
-                            </DialogContent>
-                        </Dialog>
+                        <Button type="button" className="col-span-4" variant="outline" onClick={() => setIsOpenReviewed(true)}>Reviewed<User />{formDataList?.length}</Button>
+
                     </div>
                     {/* footer for safari ui */}
                     <div className="mb-10"></div>
                 </form>
             </Form>
+
+            {/* Dialog Reviewed*/}
+            <Dialog open={isOpenReviewed} onOpenChange={setIsOpenReviewed}>
+                <DialogContent>
+                    <DialogHeader className="overflow-auto">
+                        <DialogTitle>ReviewNong</DialogTitle>
+                        {/* Table of data */}
+                        <div className="max-h-[500px] max-w-full overflow-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Class</TableHead>
+                                        <TableHead>Date</TableHead>
+                                        <TableHead>Nong</TableHead>
+                                        <TableHead>Copy</TableHead>
+                                        <TableHead>Edit</TableHead>
+                                        <TableHead>Delete</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {/* <TableRow>
+                                                    <TableCell colSpan={4} className="font-semibold bg-gray-50 text-center">
+                                                        {getDateFormat(formDataList[0].date)}
+                                                    </TableCell>
+                                                </TableRow> */}
+                                    {formDataList.map((formData: z.infer<typeof formSchema>, index: number) => (
+                                        <TableRow key={index} className={copiedList[index] ? "bg-gray-100" : ""}>
+                                            <TableCell>{formData.className}</TableCell>
+                                            <TableCell>{getDateFormat(formData.date)}</TableCell>
+                                            <TableCell>{formData.username}</TableCell>
+                                            <TableCell>
+                                                {/* Copy Button */}
+                                                <Button variant="outline" onClick={() => handleClipboard(formData, index)}>
+                                                    {/* <pre>{copiedList[index] ? "Copied" : "Copy"}</pre> */}
+                                                    <Copy />
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell>
+                                                {/* Edit Button */}
+                                                <Button variant="outline" onClick={() => { setIsOpenEdited(true); setIsOpenReviewed(false); }}><Pencil /></Button>
+                                            </TableCell>
+                                            <TableCell>
+                                                <AlertDialogButton
+                                                    buttonLabel={<Trash />}
+                                                    title={`Do you want to delete?`}
+                                                    description={`It will delete ${formData.username} reviewed`}
+                                                    handelContinue={() => deleteFormData(index)}
+                                                    variant="outline"
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+
+                        <AlertDialogButton
+                            buttonLabel={<>Delete All<Trash /></>}
+                            title="Do you want to delete?"
+                            description="It will delete all reviewed"
+                            handelContinue={resetFormDataList}
+                        />
+                        <DialogDescription>
+                            {/* <pre>{compileAllReviewText()}</pre> */}
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+
+            {/* Dialog Edited*/}
+            <Dialog open={isOpenEdited} onOpenChange={setIsOpenEdited}>
+                <DialogContent>
+                    <DialogHeader className="overflow-auto">
+                        <DialogTitle>Edit</DialogTitle>
+                        {/* <form id={`edit-form-${index}`} onSubmit={(e) =>
+                            formEdit.handleSubmit((values) => onEditSubmit(values, index))(e)
+                        }>
+                            <div className="max-h-[500px] max-w-full overflow-auto">
+                                <ReviewFormField formControl={formEdit.control} />
+                            </div>
+                            <Button type="submit" form={`edit-form-${index}`}>Submit</Button>
+                        </form> */}
+                        <Form {...formEdit}>
+                            <form onSubmit={(e) =>
+                                formEdit.handleSubmit((values) => onEditSubmit(values, 1))(e)
+                            }>
+                                <div className="max-h-[500px] max-w-full overflow-auto">
+                                    <ReviewFormField formControl={formEdit.control} />
+                                </div>
+                                <Button type="submit" className="w-full mt-3">Submit</Button>
+                            </form>
+                        </Form>
+                        <DialogDescription>
+                            {/* <pre>{compileAllReviewText()}</pre> */}
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }
