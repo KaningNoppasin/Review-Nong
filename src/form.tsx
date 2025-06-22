@@ -144,22 +144,8 @@ ${formData.reviewNong}
         }
     };
 
-    const handleEdit = async (formData: z.infer<typeof formSchema>, index: number) => {
-        try {
-            await navigator.clipboard.writeText(formatSingleReviewText(formData));
-            console.log('Edited');
-            toast("Edited !")
-
-            // TODO: Change to edit logic
-            setCopiedList(prev => {
-                const newCopiedList = [...prev];
-                newCopiedList[index] = true;
-                return newCopiedList;
-            });
-
-        } catch (error) {
-            console.error('Failed to edit: ', error);
-        }
+    const handleEdit = async (formData: z.infer<typeof formSchema>) => {
+        formEdit.reset(formData);
     };
 
 
@@ -185,6 +171,16 @@ ${formData.reviewNong}
         },
     })
 
+    const formEdit = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema)
+    })
+
+    function onEditSubmit(formData: z.infer<typeof formSchema>, indexToEdit: number) {
+        const formDataListEdited = [...formDataList];
+        formDataListEdited[indexToEdit] = formData
+        setFormDataList(formDataListEdited)
+        toast(`Nong ${formData.username} Edited!`)
+    }
     function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             console.log(values);
@@ -209,7 +205,7 @@ ${formData.reviewNong}
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10">
 
-                    <ReviewFormField formControl={form.control}/>
+                    <ReviewFormField formControl={form.control} />
 
                     <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
                         <Button type="submit" className="col-span-4">Submit</Button>
@@ -255,9 +251,27 @@ ${formData.reviewNong}
                                                         </TableCell>
                                                         <TableCell>
                                                             {/* Edit Button */}
-                                                            <Button variant="outline" onClick={() => handleEdit(formData, index)}>
-                                                                <Pencil />
-                                                            </Button>
+                                                            <Dialog>
+                                                                <DialogTrigger asChild>
+                                                                    <Button variant="outline" onClick={() => handleEdit(formData)}><Pencil /></Button>
+                                                                </DialogTrigger>
+                                                                <DialogContent>
+                                                                    <DialogHeader className="overflow-auto">
+                                                                        <DialogTitle>Edit</DialogTitle>
+                                                                        <form id={`edit-form-${index}`} onSubmit={(e) =>
+                                                                            formEdit.handleSubmit((values) => onEditSubmit(values, index))(e)
+                                                                        }>
+                                                                            <div className="max-h-[500px] max-w-full overflow-auto">
+                                                                                <ReviewFormField formControl={formEdit.control} />
+                                                                            </div>
+                                                                            <Button type="submit" form={`edit-form-${index}`}>Submit</Button>
+                                                                        </form>
+                                                                        <DialogDescription>
+                                                                            {/* <pre>{compileAllReviewText()}</pre> */}
+                                                                        </DialogDescription>
+                                                                    </DialogHeader>
+                                                                </DialogContent>
+                                                            </Dialog>
                                                         </TableCell>
                                                         <TableCell>
                                                             <AlertDialogButton
