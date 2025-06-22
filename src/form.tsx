@@ -17,7 +17,7 @@ import {
 import {
     Form
 } from "@/components/ui/form"
-import { User, Copy, Trash } from 'lucide-react';
+import { User, Copy, Trash, Pencil } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -39,9 +39,8 @@ import {
 
 import { z } from "zod"
 import { formSchema } from "@/schemas/formSchema";
-import { InputTextField } from "./components/form/input-text-field"
-import { DateField } from "./components/form/date-field"
 import { AlertDialogButton } from './components/dialog/alert-dialog-button';
+import { ReviewFormField } from "./components/form/review-form-field"
 
 export default function MyForm() {
 
@@ -145,6 +144,24 @@ ${formData.reviewNong}
         }
     };
 
+    const handleEdit = async (formData: z.infer<typeof formSchema>, index: number) => {
+        try {
+            await navigator.clipboard.writeText(formatSingleReviewText(formData));
+            console.log('Edited');
+            toast("Edited !")
+
+            // TODO: Change to edit logic
+            setCopiedList(prev => {
+                const newCopiedList = [...prev];
+                newCopiedList[index] = true;
+                return newCopiedList;
+            });
+
+        } catch (error) {
+            console.error('Failed to edit: ', error);
+        }
+    };
+
 
     const [classNameData, setClassNameData] = useState<string>("");
     const [topicData, setTopicData] = useState<string>("");
@@ -192,58 +209,7 @@ ${formData.reviewNong}
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10">
 
-                    {/* Input Field */}
-                    <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
-
-                        {/* className */}
-                        <div className="col-span-4">
-                            <InputTextField
-                                formControl={form.control}
-                                name="className"
-                                label="Class"
-                                placeholder="Python 08:00-10:00"
-                            />
-                        </div>
-
-                        {/* Date */}
-                        <div className="col-span-4">
-                            <DateField
-                                formControl={form.control}
-                                label="Date"
-                            />
-                        </div>
-
-                        {/* username */}
-                        <div className="col-span-4">
-                            <InputTextField
-                                formControl={form.control}
-                                name="username"
-                                label="Nong"
-                                placeholder="Ning"
-                            />
-                        </div>
-
-                    </div>
-
-                    {/* topic */}
-                    <InputTextField
-                        formControl={form.control}
-                        name="topic"
-                        label="Topic"
-                        placeholder="Discord Bot ..."
-                        isTextArea={true}
-                        className="resize-none h-40"
-                    />
-
-                    {/* reviewNong */}
-                    <InputTextField
-                        formControl={form.control}
-                        name="reviewNong"
-                        label="Review"
-                        placeholder="ReviewNong"
-                        isTextArea={true}
-                        className="resize-none h-60"
-                    />
+                    <ReviewFormField formControl={form.control}/>
 
                     <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
                         <Button type="submit" className="col-span-4">Submit</Button>
@@ -265,6 +231,7 @@ ${formData.reviewNong}
                                                     <TableHead>Date</TableHead>
                                                     <TableHead>Nong</TableHead>
                                                     <TableHead>Copy</TableHead>
+                                                    <TableHead>Edit</TableHead>
                                                     <TableHead>Delete</TableHead>
                                                 </TableRow>
                                             </TableHeader>
@@ -280,9 +247,16 @@ ${formData.reviewNong}
                                                         <TableCell>{getDateFormat(formData.date)}</TableCell>
                                                         <TableCell>{formData.username}</TableCell>
                                                         <TableCell>
+                                                            {/* Copy Button */}
                                                             <Button variant="outline" onClick={() => handleClipboard(formData, index)}>
                                                                 {/* <pre>{copiedList[index] ? "Copied" : "Copy"}</pre> */}
                                                                 <Copy />
+                                                            </Button>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {/* Edit Button */}
+                                                            <Button variant="outline" onClick={() => handleEdit(formData, index)}>
+                                                                <Pencil />
                                                             </Button>
                                                         </TableCell>
                                                         <TableCell>
