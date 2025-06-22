@@ -7,28 +7,24 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-
-import type { VariantProps } from "class-variance-authority";
-import { buttonVariants } from "@/components/ui/button";
 
 interface AlertProps {
-    buttonLabel: React.ReactNode;
     title: string;
     description?: string;
-    variant?: VariantProps<typeof buttonVariants>["variant"]
+    open: boolean;
+    onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+
     handelCancel?: () => void;
     handelContinue?: () => void;
 }
 
-export const AlertDialogButton = ({ buttonLabel, title, description,variant, handelCancel, handelContinue }: AlertProps) => {
+export const AlertDialogButton = ({ title, description, open, onOpenChange, handelCancel, handelContinue }: AlertProps) => {
     return (
-        <AlertDialog>
-            <AlertDialogTrigger asChild>
+        <AlertDialog open={open} onOpenChange={onOpenChange}>
+            {/* <AlertDialogTrigger asChild>
                 <Button variant={variant}>{buttonLabel}</Button>
-            </AlertDialogTrigger>
+            </AlertDialogTrigger> */}
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>

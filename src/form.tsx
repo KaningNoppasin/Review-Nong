@@ -56,12 +56,18 @@ export default function MyForm() {
     const resetFormDataList = () => {
         toast("Delete All Success")
         setFormDataList([])
+
+        setIsOpenDeleteAll(false)
+        setIsOpenReviewed(true);
     }
 
     const deleteFormData = (indexToRemove: number) => {
         const formDataListRemoved = [...formDataList.slice(0, indexToRemove), ...formDataList.slice(indexToRemove + 1)];
         toast("Delete !")
         setFormDataList(formDataListRemoved)
+
+        // setIsOpenDelete(false)
+        // setIsOpenReviewed(true);
     }
 
     const clearFormWithOutClassNameAndTopic = () => {
@@ -150,13 +156,26 @@ ${formData.reviewNong}
         setIndexEdited(index)
     };
 
+    const handleDelete = () => {
+        setIsOpenDelete(true)
+        // setIsOpenReviewed(false);
+    };
+
+    const handleDeleteAll = () => {
+        setIsOpenDeleteAll(true)
+        setIsOpenReviewed(false);
+    };
+
 
     const [classNameData, setClassNameData] = useState<string>("");
     const [topicData, setTopicData] = useState<string>("");
     const [formDataList, setFormDataList] = useState<z.infer<typeof formSchema>[]>(getFormDataList());
     const [copiedList, setCopiedList] = useState<boolean[]>([false]);
+
     const [isOpenReviewed, setIsOpenReviewed] = useState<boolean>(false);
     const [isOpenEdited, setIsOpenEdited] = useState<boolean>(false);
+    const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
+    const [isOpenDeleteAll, setIsOpenDeleteAll] = useState<boolean>(false);
     const [indexEdited, setIndexEdited] = useState<number>(0);
 
     useEffect(() => {
@@ -264,12 +283,13 @@ ${formData.reviewNong}
                                                 <Button variant="outline" onClick={() => handleEdit(formData, index)}><Pencil /></Button>
                                             </TableCell>
                                             <TableCell>
+                                                <Button variant="outline" onClick={handleDelete}><Trash /></Button>
                                                 <AlertDialogButton
-                                                    buttonLabel={<Trash />}
+                                                    open={isOpenDelete}
+                                                    onOpenChange={setIsOpenDelete}
                                                     title={`Do you want to delete?`}
                                                     description={`It will delete ${formData.username} reviewed`}
                                                     handelContinue={() => deleteFormData(index)}
-                                                    variant="outline"
                                                 />
                                             </TableCell>
                                         </TableRow>
@@ -277,13 +297,7 @@ ${formData.reviewNong}
                                 </TableBody>
                             </Table>
                         </div>
-
-                        <AlertDialogButton
-                            buttonLabel={<>Delete All<Trash /></>}
-                            title="Do you want to delete?"
-                            description="It will delete all reviewed"
-                            handelContinue={resetFormDataList}
-                        />
+                        <Button onClick={handleDeleteAll}><>Delete All<Trash /></></Button>
                         <DialogDescription>
                             {/* <pre>{compileAllReviewText()}</pre> */}
                         </DialogDescription>
@@ -310,6 +324,14 @@ ${formData.reviewNong}
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
+
+            <AlertDialogButton
+                open={isOpenDeleteAll}
+                onOpenChange={setIsOpenDeleteAll}
+                title="Do you want to delete?"
+                description="It will delete all reviewed"
+                handelContinue={resetFormDataList}
+            />
         </div>
     )
 }
