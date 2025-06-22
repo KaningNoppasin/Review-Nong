@@ -176,7 +176,7 @@ ${formData.reviewNong}
     const [isOpenEdited, setIsOpenEdited] = useState<boolean>(false);
     const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
     const [isOpenDeleteAll, setIsOpenDeleteAll] = useState<boolean>(false);
-    const [indexEdited, setIndexEdited] = useState<number>(0);
+    const [indexEdited, setIndexEdited] = useState<number | null>(null);
 
     useEffect(() => {
         localStorage.setItem("formDataList", JSON.stringify(formDataList));
@@ -309,18 +309,21 @@ ${formData.reviewNong}
             <Dialog open={isOpenEdited} onOpenChange={setIsOpenEdited}>
                 <DialogContent>
                     <DialogHeader className="overflow-auto">
-                        <DialogTitle>Edit {formDataList[indexEdited].username}
-                        </DialogTitle>
-                        <Form {...formEdit}>
-                            <form onSubmit={(e) =>
-                                formEdit.handleSubmit((values) => onEditSubmit(values, indexEdited))(e)
-                            }>
-                                <div className="max-h-[500px] max-w-full overflow-auto">
-                                    <ReviewFormField formControl={formEdit.control} />
-                                </div>
-                                <Button type="submit" className="w-full mt-3">Submit</Button>
-                            </form>
-                        </Form>
+                        {indexEdited !== null && indexEdited !== undefined && formDataList[indexEdited] &&
+                            <>
+                                <DialogTitle>Edit {formDataList[indexEdited].username}</DialogTitle>
+                                <Form {...formEdit}>
+                                    <form onSubmit={(e) =>
+                                        formEdit.handleSubmit((values) => onEditSubmit(values, indexEdited))(e)
+                                    }>
+                                        <div className="max-h-[500px] max-w-full overflow-auto">
+                                            <ReviewFormField formControl={formEdit.control} />
+                                        </div>
+                                        <Button type="submit" className="w-full mt-3">Submit</Button>
+                                    </form>
+                                </Form>
+                            </>
+                        }
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
