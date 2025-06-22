@@ -55,7 +55,7 @@ export const DateField = ({ formControl, label }: DateFieldProps) => {
                                     )}
                                 >
                                     {field.value ? (
-                                        format(field.value, "PPP")
+                                        format(field.value, "ccc d LLL Y")
                                     ) : (
                                         <span>Pick a date</span>
                                     )}

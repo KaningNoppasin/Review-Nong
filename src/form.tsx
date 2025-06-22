@@ -56,7 +56,7 @@ export default function MyForm() {
     }
 
     const resetFormDataList = () => {
-        toast("Clear local storage !")
+        toast("Delete All Success")
         setFormDataList([])
     }
 
@@ -200,7 +200,7 @@ ${formData.reviewNong}
                             <InputTextField
                                 formControl={form.control}
                                 name="className"
-                                label="ClassName"
+                                label="Class"
                                 placeholder="Python 08:00-10:00"
                             />
                         </div>
@@ -239,7 +239,7 @@ ${formData.reviewNong}
                     <InputTextField
                         formControl={form.control}
                         name="reviewNong"
-                        label="ReviewNong"
+                        label="Review"
                         placeholder="ReviewNong"
                         isTextArea={true}
                         className="resize-none h-60"
@@ -313,6 +313,8 @@ ${formData.reviewNong}
                             </DialogContent>
                         </Dialog>
                     </div>
+                    {/* footer for safari ui */}
+                    <div className="mb-10"></div>
                 </form>
             </Form>
         </div>
