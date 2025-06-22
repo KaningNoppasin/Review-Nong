@@ -24,7 +24,6 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 
 import {
@@ -144,8 +143,11 @@ ${formData.reviewNong}
         }
     };
 
-    const handleEdit = async (formData: z.infer<typeof formSchema>) => {
+    const handleEdit = async (formData: z.infer<typeof formSchema>, index: number) => {
         formEdit.reset(formData);
+        setIsOpenEdited(true);
+        setIsOpenReviewed(false);
+        setIndexEdited(index)
     };
 
 
@@ -155,6 +157,7 @@ ${formData.reviewNong}
     const [copiedList, setCopiedList] = useState<boolean[]>([false]);
     const [isOpenReviewed, setIsOpenReviewed] = useState<boolean>(false);
     const [isOpenEdited, setIsOpenEdited] = useState<boolean>(false);
+    const [indexEdited, setIndexEdited] = useState<number>(0);
 
     useEffect(() => {
         localStorage.setItem("formDataList", JSON.stringify(formDataList));
@@ -182,7 +185,11 @@ ${formData.reviewNong}
         formDataListEdited[indexToEdit] = formData
         setFormDataList(formDataListEdited)
         toast(`Nong ${formData.username} Edited!`)
+
+        setIsOpenEdited(false);
+        setIsOpenReviewed(true);
     }
+
     function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             console.log(values);
@@ -191,11 +198,6 @@ ${formData.reviewNong}
             addFormDataList(values)
             clearFormWithOutClassNameAndTopic()
             toast("Success")
-            // toast(
-            //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            //         <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-            //     </pre>
-            // );
         } catch (error) {
             console.error("Form submission error", error);
             toast.error("Failed to submit the form. Please try again.");
@@ -259,7 +261,7 @@ ${formData.reviewNong}
                                             </TableCell>
                                             <TableCell>
                                                 {/* Edit Button */}
-                                                <Button variant="outline" onClick={() => { setIsOpenEdited(true); setIsOpenReviewed(false); }}><Pencil /></Button>
+                                                <Button variant="outline" onClick={() => handleEdit(formData, index)}><Pencil /></Button>
                                             </TableCell>
                                             <TableCell>
                                                 <AlertDialogButton
@@ -293,18 +295,11 @@ ${formData.reviewNong}
             <Dialog open={isOpenEdited} onOpenChange={setIsOpenEdited}>
                 <DialogContent>
                     <DialogHeader className="overflow-auto">
-                        <DialogTitle>Edit</DialogTitle>
-                        {/* <form id={`edit-form-${index}`} onSubmit={(e) =>
-                            formEdit.handleSubmit((values) => onEditSubmit(values, index))(e)
-                        }>
-                            <div className="max-h-[500px] max-w-full overflow-auto">
-                                <ReviewFormField formControl={formEdit.control} />
-                            </div>
-                            <Button type="submit" form={`edit-form-${index}`}>Submit</Button>
-                        </form> */}
+                        <DialogTitle>Edit {formDataList[indexEdited].username}
+                        </DialogTitle>
                         <Form {...formEdit}>
                             <form onSubmit={(e) =>
-                                formEdit.handleSubmit((values) => onEditSubmit(values, 1))(e)
+                                formEdit.handleSubmit((values) => onEditSubmit(values, indexEdited))(e)
                             }>
                                 <div className="max-h-[500px] max-w-full overflow-auto">
                                     <ReviewFormField formControl={formEdit.control} />
@@ -312,9 +307,6 @@ ${formData.reviewNong}
                                 <Button type="submit" className="w-full mt-3">Submit</Button>
                             </form>
                         </Form>
-                        <DialogDescription>
-                            {/* <pre>{compileAllReviewText()}</pre> */}
-                        </DialogDescription>
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
