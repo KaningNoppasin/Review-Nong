@@ -21,7 +21,6 @@ import { User, Copy, Trash, Pencil } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
@@ -66,8 +65,8 @@ export default function MyForm() {
         toast("Delete !")
         setFormDataList(formDataListRemoved)
 
-        // setIsOpenDelete(false)
-        // setIsOpenReviewed(true);
+        setIsOpenDelete(false)
+        setIsOpenReviewed(true);
     }
 
     const clearFormWithOutClassNameAndTopic = () => {
@@ -124,14 +123,6 @@ ${formData.reviewNong}
 `
     }
 
-    // const compileAllReviewText = () => {
-    //     let reviewText: string = ""
-    //     formDataList.map((formData: z.infer<typeof formSchema>) => (
-    //         reviewText += formatSingleReviewText(formData)
-    //     ))
-    //     return reviewText
-    // }
-
     const handleClipboard = async (formData: z.infer<typeof formSchema>, index: number) => {
         try {
             await navigator.clipboard.writeText(formatSingleReviewText(formData));
@@ -156,9 +147,11 @@ ${formData.reviewNong}
         setIndexEdited(index)
     };
 
-    const handleDelete = () => {
+    const handleDelete = (index: number) => {
+        setIndexDeleted(index)
+
         setIsOpenDelete(true)
-        // setIsOpenReviewed(false);
+        setIsOpenReviewed(false);
     };
 
     const handleDeleteAll = () => {
@@ -177,6 +170,7 @@ ${formData.reviewNong}
     const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
     const [isOpenDeleteAll, setIsOpenDeleteAll] = useState<boolean>(false);
     const [indexEdited, setIndexEdited] = useState<number | null>(null);
+    const [indexDeleted, setIndexDeleted] = useState<number | null>(null);
 
     useEffect(() => {
         localStorage.setItem("formDataList", JSON.stringify(formDataList));
@@ -233,9 +227,7 @@ ${formData.reviewNong}
                     <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-4">
                         <Button type="submit" className="col-span-4">Submit</Button>
                         <Button type="button" onClick={clearForm} className="col-span-4">Clear Form</Button>
-
                         <Button type="button" className="col-span-4" variant="outline" onClick={() => setIsOpenReviewed(true)}>Reviewed<User />{formDataList?.length}</Button>
-
                     </div>
                     {/* footer for safari ui */}
                     <div className="mb-10"></div>
@@ -262,10 +254,10 @@ ${formData.reviewNong}
                                 </TableHeader>
                                 <TableBody>
                                     {/* <TableRow>
-                                                    <TableCell colSpan={4} className="font-semibold bg-gray-50 text-center">
-                                                        {getDateFormat(formDataList[0].date)}
-                                                    </TableCell>
-                                                </TableRow> */}
+                                        <TableCell colSpan={4} className="font-semibold bg-gray-50 text-center">
+                                            {getDateFormat(formDataList[0].date)}
+                                        </TableCell>
+                                    </TableRow> */}
                                     {formDataList.map((formData: z.infer<typeof formSchema>, index: number) => (
                                         <TableRow key={index} className={copiedList[index] ? "bg-gray-100" : ""}>
                                             <TableCell>{formData.className}</TableCell>
@@ -273,24 +265,15 @@ ${formData.reviewNong}
                                             <TableCell>{formData.username}</TableCell>
                                             <TableCell>
                                                 {/* Copy Button */}
-                                                <Button variant="outline" onClick={() => handleClipboard(formData, index)}>
-                                                    {/* <pre>{copiedList[index] ? "Copied" : "Copy"}</pre> */}
-                                                    <Copy />
-                                                </Button>
+                                                <Button variant="outline" onClick={() => handleClipboard(formData, index)}><Copy /></Button>
                                             </TableCell>
                                             <TableCell>
                                                 {/* Edit Button */}
                                                 <Button variant="outline" onClick={() => handleEdit(formData, index)}><Pencil /></Button>
                                             </TableCell>
                                             <TableCell>
-                                                <Button variant="outline" onClick={handleDelete}><Trash /></Button>
-                                                <AlertDialogButton
-                                                    open={isOpenDelete}
-                                                    onOpenChange={setIsOpenDelete}
-                                                    title={`Do you want to delete?`}
-                                                    description={`It will delete ${formData.username} reviewed`}
-                                                    handelContinue={() => deleteFormData(index)}
-                                                />
+                                                {/* Delete Button */}
+                                                <Button variant="outline" onClick={() => handleDelete(index)}><Trash /></Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -298,9 +281,6 @@ ${formData.reviewNong}
                             </Table>
                         </div>
                         <Button onClick={handleDeleteAll}><>Delete All<Trash /></></Button>
-                        <DialogDescription>
-                            {/* <pre>{compileAllReviewText()}</pre> */}
-                        </DialogDescription>
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
@@ -328,6 +308,7 @@ ${formData.reviewNong}
                 </DialogContent>
             </Dialog>
 
+            {/* Dialog DeleteAll*/}
             <AlertDialogButton
                 open={isOpenDeleteAll}
                 onOpenChange={setIsOpenDeleteAll}
@@ -335,6 +316,17 @@ ${formData.reviewNong}
                 description="It will delete all reviewed"
                 handelContinue={resetFormDataList}
             />
+
+            {/* Dialog Delete*/}
+            {indexDeleted !== null && indexDeleted !== undefined && formDataList[indexDeleted] &&
+                <AlertDialogButton
+                    open={isOpenDelete}
+                    onOpenChange={setIsOpenDelete}
+                    title={`Do you want to delete?`}
+                    description={`It will delete ${formDataList[indexDeleted].username} reviewed`}
+                    handelContinue={() => deleteFormData(indexDeleted)}
+                />
+            }
         </div>
     )
 }
